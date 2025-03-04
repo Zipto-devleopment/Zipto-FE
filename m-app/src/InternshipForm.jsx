@@ -3,6 +3,7 @@ import { Form, Button, Container } from "react-bootstrap";
 import SignaturePad from "react-signature-canvas";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import LoadingBar from "react-top-loading-bar";
 
 const InternshipForm = () => {
   const [email, setEmail] = useState("");
@@ -11,8 +12,11 @@ const InternshipForm = () => {
   const [domain, setDomain] = useState("Web Development");
   const [duration, setDuration] = useState("One Month");
   const [accepted, setAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const signatureRef = useRef(null);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+  const loadingBarRef = useRef(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,21 +25,28 @@ const InternshipForm = () => {
       return;
     }
 
-    const signatureData = signatureRef.current.toDataURL(); // Get base64 signature
-
+    const signatureData = signatureRef.current.toDataURL();
     const formData = { name, email, phone, domain, duration, signature: signatureData };
 
     try {
+      setLoading(true);
+      loadingBarRef.current.continuousStart(); // Start loading bar
+
       await axios.post("https://zipto-be.onrender.com/api/internships", formData);
+
       alert("Form submitted successfully!");
-      navigate("/payment-page")
+      navigate("/payment-page");
     } catch (error) {
       alert("Error submitting form.");
+    } finally {
+      setLoading(false);
+      loadingBarRef.current.complete(); // Stop loading bar
     }
   };
 
   return (
     <Container className="border text-start">
+      <LoadingBar color="#f11946" ref={loadingBarRef} />
       <h2 className="text-center bg-black text-white">Zipto Internship Offer Acceptance Form</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
@@ -90,9 +101,9 @@ const InternshipForm = () => {
           <Form.Control type="text" value="59 INR" readOnly />
         </Form.Group>
 
-
-
-        <Button variant="primary" type="submit">Accept</Button>
+        <Button variant="primary" type="submit" disabled={loading}>
+          {loading ? "Processing..." : "Accept"}
+        </Button>
       </Form>
     </Container>
   );
