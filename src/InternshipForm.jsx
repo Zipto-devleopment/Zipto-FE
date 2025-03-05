@@ -102,7 +102,7 @@ const InternshipForm = () => {
         </Form.Group>
 
         <Button variant="primary" type="submit" disabled={loading}>
-          {loading ? "Processing..." : "Accept"}
+          {loading ? "Processing....." : "Accept"}
         </Button>
       </Form>
     </Container>
