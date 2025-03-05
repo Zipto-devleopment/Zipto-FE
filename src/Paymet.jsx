@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import axios from "axios";
-import Qrcode from "./assets/Qrcode.jpg";
+import Qrcode from "./assets/QRcode.jpg";
 
 function Paymet() {
   const [amount, setAmount] = useState("");
